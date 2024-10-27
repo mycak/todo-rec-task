@@ -1,37 +1,25 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { Stack } from "expo-router";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+  const queryClient = new QueryClient();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+    <QueryClientProvider client={queryClient}>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#1e1e1e", // Dark background to match theme
+          },
+          headerTintColor: "#2bd247", // Green accent color from the app
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerTitle: "ToDo App",
+          headerBackVisible: false,
+        }}
+      >
+        <Stack.Screen name="index" />
       </Stack>
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 }
